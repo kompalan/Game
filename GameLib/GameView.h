@@ -9,6 +9,10 @@
 #define GAME_GAMEVIEW_H
 #include <GLFW/glfw3.h>
 
+/**
+ * Main View Class for the Whole Game.
+ * Manages the Game Loop.
+ */
 class GameView {
 private:
     /// The Window
