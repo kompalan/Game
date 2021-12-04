@@ -21,8 +21,14 @@ private:
     /// Timer
     double mTime;
 
-    GLuint vertex_buffer, vertex_shader, fragment_shader, program;
-    GLint mvp_location, vpos_location, vcol_location;
+    unsigned int mVBO;
+
+    double positions[6] = {
+            -0.5f, -0.5f,
+            0.0f, 0.5f,
+            0.5f, -0.5f
+    };
+
 public:
     GameView() = delete;
 

@@ -1,3 +1,10 @@
+/**
+ * @file main.cpp
+ * @author Anurag Kompalli
+ *
+ * Sets up GLFW, sets up the GLFW error callback, and
+ * calls GameView to kick off the game.
+ */
 #define GL_SILENCE_DEPRECATION
 #define GLEW_STATIC
 
