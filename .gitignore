@@ -42,3 +42,6 @@ venv
 *.exe
 *.out
 *.app
+
+*.html
+*.js
