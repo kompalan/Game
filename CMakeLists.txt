@@ -15,7 +15,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(include/glm)
 add_subdirectory(include/glfw-3.3.5)
-add_subdirectory(include/glew/build/cmake)
+
 add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE ${SOURCE_FILES})
 
 find_package(OpenGL REQUIRED)
