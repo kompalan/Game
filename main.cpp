@@ -30,14 +30,6 @@ int main(int argc, char* argv[])
     while(!view->IsClosed())
     {
         view->Clear();
-
-        glBegin(GL_QUADS);
-        glVertex2f(-0.5f, -0.5f);
-        glVertex2f(-0.5f, 0.5f);
-        glVertex2f(0.5f, 0.5f);
-        glVertex2f(0.5f, -0.5f);
-        glEnd();
-
         view->Update();
     }
 
