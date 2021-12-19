@@ -8,36 +8,50 @@
 #ifndef GAME_GAMEVIEW_H
 #define GAME_GAMEVIEW_H
 #include <GLFW/glfw3.h>
+#include <string>
+#include <bitset>
 
-/**
- * Main View Class for the Whole Game.
- * Manages the Game Loop.
- */
-class GameView {
-private:
-    /// The Window
-    GLFWwindow* mWindow;
 
-    /// Timer
-    double mTime;
+class Logger;
+namespace Engine
+{
+    namespace Graphics
+    {
+        /**
+         * Main View class for the game,
+         * manages the GLFW window
+         */
+        class GameView {
+        private:
+            int mWidth = 0;
+            int mHeight = 0;
 
-    unsigned int mVBO;
+            std::string mName = "";
+            GLFWwindow* mWindow;
 
-    double positions[6] = {
-            -0.5f, -0.5f,
-            0.0f, 0.5f,
-            0.5f, -0.5f
-    };
+        public:
 
-public:
-    GameView() = delete;
+            GameView() = delete;
 
-    explicit GameView(GLFWwindow* window);
-    void Initialize();
+            explicit GameView(int width, int height, std::string name);
 
-    void Draw();
+            void Initialize();
 
-    static void KeyHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
-};
+            void Update();
+
+            void Clear();
+
+            bool IsClosed();
+
+            static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+            static void ResizeCallback(GLFWwindow* window, int width, int height);
+
+            static bool IsKeyPressed(int key);
+
+            ~GameView();
+        };
+    }
+}
 
 #endif //GAME_GAMEVIEW_H

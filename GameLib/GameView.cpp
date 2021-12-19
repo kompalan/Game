@@ -6,74 +6,102 @@
 #define GL_SILENCE_DEPRECATION
 #define GLEW_STATIC
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <glog/logging.h>
+#include <iostream>
+
 #include "GameView.h"
 
-/**
- * Constructor
- * @param window GLFW window
- */
-GameView::GameView(GLFWwindow* window) : mWindow(window)
+using namespace Engine::Graphics;
+
+std::bitset<1024> Keys = std::bitset<1024>();
+
+GameView::GameView(int width, int height, std::string name)
 {
+    mWidth = width;
+    mHeight = height;
+    mName = name;
 }
 
-/**
- * Initialize the GameView and Set up Stuff for OpenGL
- */
 void GameView::Initialize()
 {
-    glfwSetKeyCallback(mWindow, GameView::KeyHandler);
-    mTime = glfwGetTime();
+    if(!glfwInit())
+    {
+        LOG(ERROR) << "GLFW Failed to Initialize. Exiting Now";
+        glfwTerminate();
+    }
 
-    int width, height;
-    glfwGetFramebufferSize(mWindow, &width, &height);
+    LOG(INFO) << "Initializing window of width " << mWidth << " height "
+                << mHeight << " and name " << mName;
+
+    mWindow = glfwCreateWindow(mWidth, mHeight, mName.c_str(), NULL, NULL);
+
+    if(!mWindow)
+    {
+        LOG(ERROR) << "Failed to Create a Window. Exiting Now";
+        glfwTerminate();
+    }
+
+    glfwMakeContextCurrent(mWindow);
+
+    glewExperimental = GL_TRUE;
+    if(glewInit() != GLEW_OK)
+    {
+        LOG(ERROR) << "Failed To Initialize GLEW. Exiting Now";
+        glfwTerminate();
+    }
+
+    glfwSetWindowUserPointer(mWindow, this);
+    glfwSetWindowSizeCallback(mWindow, GameView::ResizeCallback);
+    glfwSetKeyCallback(mWindow, GameView::KeyCallback);
+}
+
+void GameView::Update()
+{
+    glfwPollEvents();
+    glfwSwapBuffers(mWindow);
+}
+
+GameView::~GameView()
+{
+    LOG(INFO) << "Destructor Called. Closing Window Gracefully";
+    glfwSetWindowShouldClose(mWindow, GLFW_TRUE);
+    glfwTerminate();
+}
+
+void GameView::Clear()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+bool GameView::IsClosed()
+{
+    return glfwWindowShouldClose(mWindow) == GLFW_TRUE;
+}
+
+void GameView::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if(action == GLFW_PRESS)
+    {
+        Keys.set(key, true);
+    }
+    else if(action == GLFW_RELEASE)
+    {
+        Keys.set(key, false);
+    }
+}
+
+void GameView::ResizeCallback(GLFWwindow* window, int width, int height)
+{
     glViewport(0, 0, width, height);
-
-    glGenBuffers(1, &mVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
 }
 
-/**
- * Draw the screen in the mWindow context
- */
-void GameView::Draw()
+bool GameView::IsKeyPressed(int key)
 {
-    // Render Here
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-}
-
-
-/**
- * Handle Keypress events from GLFW.
- * https://www.glfw.org/docs/3.3/group__input.html
- *
- * @param window GLFW window
- * @param key Key that was pressed
- * @param scancode The system-specific scancode of the key.
- * @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
- * @param mods Bit field describing which modifier keys were held down.
- */
-void GameView::KeyHandler(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    switch(key)
+    if(Keys.test(key))
     {
-    case GLFW_KEY_ESCAPE:
-    {
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-        break;
+        return true;
     }
-    case GLFW_KEY_RIGHT:
-    {
-        break;
-    }
-    case GLFW_KEY_LEFT:
-    {
-        break;
-    }
-    default:
-    {
-        break;
-    }
-    }
+    return false;
 }

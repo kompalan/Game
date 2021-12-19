@@ -8,70 +8,38 @@
 #define GL_SILENCE_DEPRECATION
 #define GLEW_STATIC
 
-#include <iostream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <memory>
 #include <GameView.h>
+#include <glog/logging.h>
 
-void error_callback(int error, const char* description)
+int main(int argc, char* argv[])
 {
-    std::cout << "Error: " << description << std::endl;
-}
+    fLB::FLAGS_log_prefix = true;
+    fLB::FLAGS_alsologtostderr = true;
+    fLB::FLAGS_colorlogtostderr = true;
 
-int main()
-{
-    GLFWwindow* window;
-
-    // Set the Error Callback function
-    glfwSetErrorCallback(error_callback);
-
-    // Initialize the library
-    if (!glfwInit())
-    {
-        return -1;
-    }
-
-
-
-    // Create a windowed mode window and its OpenGL context
-    window = glfwCreateWindow(800, 600, "Anurag's Amazing Game", NULL, NULL);
-
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-
-    // Make the window context current
-    glfwMakeContextCurrent(window);
-
-    std::shared_ptr<GameView> view = std::make_shared<GameView>(window);
+    google::InitGoogleLogging(argv[0]);
+    std::shared_ptr<Engine::Graphics::GameView> view =
+            std::make_shared<Engine::Graphics::GameView>(800, 600, "Anurag");
     view->Initialize();
 
-    GLenum err = glewInit();
+    glClearColor(0.2f, 0.3f, 0.8f, 1.0f);
 
-    if (err != GLEW_OK)
+    while(!view->IsClosed())
     {
-        std::cout << "Error!" << std::endl;
-        glfwTerminate();
+        view->Clear();
+
+        glBegin(GL_QUADS);
+        glVertex2f(-0.5f, -0.5f);
+        glVertex2f(-0.5f, 0.5f);
+        glVertex2f(0.5f, 0.5f);
+        glVertex2f(0.5f, -0.5f);
+        glEnd();
+
+        view->Update();
     }
-
-    glfwSwapInterval(1);
-
-    while (!glfwWindowShouldClose(window))
-    {
-        // Draw the Screen
-        view->Draw();
-
-        // Swap Front and Back Buffers
-        glfwSwapBuffers(window);
-
-        // Poll for and process events
-        glfwPollEvents();
-    }
-
-    glfwSetWindowShouldClose(window, GLFW_TRUE);
-    glfwTerminate();
 
     return 0;
 }
