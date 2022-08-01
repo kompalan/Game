@@ -8,8 +8,9 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <glog/logging.h>
+#include <glm/vec2.hpp>
 #include <iostream>
+#include <fstream>
 
 #include "GameView.h"
 
@@ -28,18 +29,21 @@ void GameView::Initialize()
 {
     if(!glfwInit())
     {
-        LOG(ERROR) << "GLFW Failed to Initialize. Exiting Now";
         glfwTerminate();
     }
 
-    LOG(INFO) << "Initializing window of width " << mWidth << " height "
-                << mHeight << " and name " << mName;
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
     mWindow = glfwCreateWindow(mWidth, mHeight, mName.c_str(), NULL, NULL);
 
     if(!mWindow)
     {
-        LOG(ERROR) << "Failed to Create a Window. Exiting Now";
         glfwTerminate();
     }
 
@@ -48,13 +52,14 @@ void GameView::Initialize()
     glewExperimental = GL_TRUE;
     if(glewInit() != GLEW_OK)
     {
-        LOG(ERROR) << "Failed To Initialize GLEW. Exiting Now";
         glfwTerminate();
     }
 
     glfwSetWindowUserPointer(mWindow, this);
     glfwSetWindowSizeCallback(mWindow, GameView::ResizeCallback);
     glfwSetKeyCallback(mWindow, GameView::KeyCallback);
+
+    std::ofstream ShaderFile("shaders/FragmentShader.shader");
 }
 
 void GameView::Update()
@@ -65,7 +70,6 @@ void GameView::Update()
 
 GameView::~GameView()
 {
-    LOG(INFO) << "Destructor Called. Closing Window Gracefully";
     glfwSetWindowShouldClose(mWindow, GLFW_TRUE);
     glfwTerminate();
 }
@@ -94,6 +98,7 @@ void GameView::KeyCallback(GLFWwindow* window, int key, int scancode, int action
 
 void GameView::ResizeCallback(GLFWwindow* window, int width, int height)
 {
+
     glViewport(0, 0, width, height);
 }
 

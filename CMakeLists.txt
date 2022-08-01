@@ -16,14 +16,14 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(Tests)
 add_subdirectory(include/glm)
 add_subdirectory(include/glfw-3.3.5)
-add_subdirectory(include/glog)
 
-file(COPY logs/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+#file(COPY logs/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 
 add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE ${SOURCE_FILES})
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
+
 include_directories(${GLEW_INCLUDE_DIRS})
 
-target_link_libraries(${PROJECT_NAME} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} glfw glm glog ${APPLICATION_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} glfw glm ${APPLICATION_LIBRARY})

@@ -29,6 +29,9 @@ namespace Engine
             std::string mName = "";
             GLFWwindow* mWindow;
 
+            std::string mVertexShaderSource;
+            std::string mFragmentShaderSource;
+
         public:
 
             GameView() = delete;

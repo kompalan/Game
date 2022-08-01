@@ -12,15 +12,10 @@
 #include <GLFW/glfw3.h>
 #include <memory>
 #include <GameView.h>
-#include <glog/logging.h>
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
-    fLB::FLAGS_log_prefix = true;
-    fLB::FLAGS_alsologtostderr = true;
-    fLB::FLAGS_colorlogtostderr = true;
-
-    google::InitGoogleLogging(argv[0]);
     std::shared_ptr<Engine::Graphics::GameView> view =
             std::make_shared<Engine::Graphics::GameView>(800, 600, "Anurag");
     view->Initialize();
