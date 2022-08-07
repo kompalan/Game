@@ -1,6 +1,6 @@
 project(GameLib)
 
-set(SOURCE_FILES GameView.cpp GameView.h)
+set(SOURCE_FILES GameView.cpp GameView.h Utils.h Shader.cpp Shader.h)
 
 
 find_package(OpenGL REQUIRED)

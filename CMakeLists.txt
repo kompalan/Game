@@ -18,6 +18,14 @@ add_subdirectory(include/glm)
 add_subdirectory(include/glfw-3.3.5)
 
 #file(COPY logs/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+# Copy resources into output directory
+file(COPY shaders/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+
+if(APPLE)
+    # When building for MacOS, also copy resources into the bundle resources
+    set(RESOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.app/Contents/Resources)
+    file(COPY shaders/ DESTINATION ${RESOURCE_DIR}/)
+endif()
 
 add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE ${SOURCE_FILES})
 

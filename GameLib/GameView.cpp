@@ -10,13 +10,16 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 #include <iostream>
-#include <fstream>
+#include "Utils.h"
 
 #include "GameView.h"
 
 using namespace Engine::Graphics;
 
-std::bitset<1024> Keys = std::bitset<1024>();
+static std::bitset<1024> Keys = std::bitset<1024>();
+
+static double MouseX;
+static double MouseY;
 
 GameView::GameView(int width, int height, std::string name)
 {
@@ -58,8 +61,7 @@ void GameView::Initialize()
     glfwSetWindowUserPointer(mWindow, this);
     glfwSetWindowSizeCallback(mWindow, GameView::ResizeCallback);
     glfwSetKeyCallback(mWindow, GameView::KeyCallback);
-
-    std::ofstream ShaderFile("shaders/FragmentShader.shader");
+    glfwSetCursorPosCallback(mWindow, GameView::MouseCallback);
 }
 
 void GameView::Update()
@@ -109,4 +111,10 @@ bool GameView::IsKeyPressed(int key)
         return true;
     }
     return false;
+}
+
+void GameView::MouseCallback(GLFWwindow* window, double xpos, double ypos)
+{
+    MouseX = xpos;
+    MouseY = ypos;
 }
